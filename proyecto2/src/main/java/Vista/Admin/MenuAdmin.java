@@ -1,16 +1,15 @@
-package com.example.application.views;
+package Vista.views;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import Vista.views.Admin.AdminListaCursos;
+import Vista.views.chat.ChatView;
+import Vista.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Nav;
 import com.vaadin.flow.component.html.Span;
@@ -20,32 +19,15 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.component.page.Push;
-import com.vaadin.flow.theme.Theme;
-import com.example.application.views.MainLayout;
-import com.example.application.views.helloworld.HelloWorldView;
-import com.example.application.views.about.AboutView;
-import com.example.application.views.chat.ChatView;
-import com.vaadin.flow.component.avatar.Avatar;
 
-/**
- * The main view is a top-level placeholder for other views.
- */
-@PWA(name = "My App", shortName = "My App", enableInstallPrompt = false)
-@Push
-@Theme(themeFolder = "myapp")
-@PageTitle("Main")
-public class MainLayout extends AppLayout {
+@PageTitle("Administrador")
+@Route(value = "admin", layout = MainLayout.class)
+
+public class Menu extends AppLayout {
 
     public static class MenuItemInfo {
 
@@ -75,7 +57,7 @@ public class MainLayout extends AppLayout {
 
     private H1 viewTitle;
 
-    public MainLayout() {
+    public Menu() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
@@ -97,7 +79,7 @@ public class MainLayout extends AppLayout {
     }
 
     private Component createDrawerContent() {
-        H2 appName = new H2("My App");
+        H2 appName = new H2("Administrador");
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
@@ -129,12 +111,10 @@ public class MainLayout extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", "la la-globe", HelloWorldView.class), //
-
-                new MenuItemInfo("About", "la la-file", AboutView.class), //
-
-                new MenuItemInfo("Chat", "la la-comments", ChatView.class), //
-
+                new MenuItemInfo("Gesttión de cursos", "la la-book", HelloWorldView.class), //cambiar las clases
+                new MenuItemInfo("Gestión de docentes", "la la-user", AdminListaCursos.class),
+                new MenuItemInfo("Gestion de estudiantes", "la la-users", ChatView.class),
+                new MenuItemInfo("Asignación de cursos", "la la-edit", HelloWorldView.class)
         };
         List<RouterLink> links = new ArrayList<>();
         for (MenuItemInfo menuItemInfo : menuItems) {
@@ -165,7 +145,6 @@ public class MainLayout extends AppLayout {
     private Footer createFooter() {
         Footer layout = new Footer();
         layout.addClassNames("flex", "items-center", "my-s", "px-m", "py-xs");
-
         return layout;
     }
 
