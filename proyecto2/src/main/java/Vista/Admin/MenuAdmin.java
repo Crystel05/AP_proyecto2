@@ -1,11 +1,15 @@
-package Vista.views;
+package Vista.Admin;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Vista.views.Admin.AdminListaCursos;
-import Vista.views.chat.ChatView;
-import Vista.views.helloworld.HelloWorldView;
+import Vista.Admin.AsignarCursos.ListaCursosAsignar;
+import Vista.Admin.GestionCursos.AdminListaCursos;
+import Vista.Admin.GestionDocentes.AdminListaDocentes;
+import Vista.Admin.GestionEstudiantes.AdminListaEstudiantes;
+import Vista.MainLayout;
+import Vista.chat.ChatView;
+import Vista.helloworld.HelloWorldView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -19,7 +23,6 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.router.PageTitle;
@@ -27,7 +30,7 @@ import com.vaadin.flow.router.PageTitle;
 @PageTitle("Administrador")
 @Route(value = "admin", layout = MainLayout.class)
 
-public class Menu extends AppLayout {
+public class MenuAdmin extends AppLayout {
 
     public static class MenuItemInfo {
 
@@ -57,7 +60,7 @@ public class Menu extends AppLayout {
 
     private H1 viewTitle;
 
-    public Menu() {
+    public MenuAdmin() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
@@ -111,10 +114,10 @@ public class Menu extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Gesttión de cursos", "la la-book", HelloWorldView.class), //cambiar las clases
-                new MenuItemInfo("Gestión de docentes", "la la-user", AdminListaCursos.class),
-                new MenuItemInfo("Gestion de estudiantes", "la la-users", ChatView.class),
-                new MenuItemInfo("Asignación de cursos", "la la-edit", HelloWorldView.class)
+                new MenuItemInfo("Gesttión de cursos", "la la-book", AdminListaCursos.class), //cambiar las clases
+                new MenuItemInfo("Gestión de docentes", "la la-user", AdminListaDocentes.class),
+                new MenuItemInfo("Gestion de estudiantes", "la la-users", AdminListaEstudiantes.class),
+                new MenuItemInfo("Asignación de cursos", "la la-edit", ListaCursosAsignar.class)
         };
         List<RouterLink> links = new ArrayList<>();
         for (MenuItemInfo menuItemInfo : menuItems) {

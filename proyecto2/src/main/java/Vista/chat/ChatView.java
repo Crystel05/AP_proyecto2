@@ -1,8 +1,8 @@
-package Vista.views.chat;
+package Vista.chat;
 
 import java.util.UUID;
 
-import Vista.views.Menu;
+import Vista.Admin.MenuAdmin;
 import com.vaadin.collaborationengine.CollaborationMessageInput;
 import com.vaadin.collaborationengine.CollaborationMessageList;
 import com.vaadin.collaborationengine.UserInfo;
@@ -13,7 +13,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Chat")
-@Route(value = "chat", layout = Menu.class)
+@Route(value = "chat", layout = MenuAdmin.class)
 public class ChatView extends VerticalLayout {
 
     public ChatView() {

@@ -1,8 +1,7 @@
-package Vista.views.helloworld;
+package Vista.helloworld;
 
 
-import Vista.views.MainLayout;
-import Vista.views.Menu;
+import Vista.Admin.MenuAdmin;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,7 +10,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
 
 @PageTitle("Hello World")
-@Route(value = "hello", layout = Menu.class)
+@Route(value = "hello", layout = MenuAdmin.class)
 public class HelloWorldView extends HorizontalLayout {
 
     private TextField name;

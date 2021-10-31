@@ -1,4 +1,4 @@
-package Vista.views;
+package Vista;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.router.PageTitle;

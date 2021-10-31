@@ -15,33 +15,32 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Agregar Curso")
-@Route(value = "cursoAdd", layout = MenuAdmin.class)
-public class AgregarCurso extends VerticalLayout {
+@PageTitle("Modificar curso")
+@Route(value = "modCurso", layout = MenuAdmin.class)
+public class ModificarCurso extends VerticalLayout {
 
     private H2 titulo;
     private TextField id;
     private TextField nombre;
     private ComboBox<Grado> grado;
     private ComboBox<Dia> dia;
-    private TimePicker horaInicio;
-    private TimePicker horaFin;
+    private TextField horaInicio;
+    private TextField horaFin;
     private HorizontalLayout horario;
     private HorizontalLayout datos;
     private H3 horas;
-    private Button agregar;
+    private Button modificar;
 
-    public AgregarCurso() {
+    public ModificarCurso() {
         ventana();
     }
 
     private void ventana() {
         datos = new HorizontalLayout();
-        titulo = new H2("Agregar curso nuevo");
+        titulo = new H2("Modificar curso");
         id = new TextField("ID");
         id.setWidth("300px");
         nombre = new TextField("Nombre");
@@ -57,20 +56,20 @@ public class AgregarCurso extends VerticalLayout {
         dia.setWidth("300px");
 
         horario = new HorizontalLayout();
-        horaInicio = new TimePicker("Hora de inicio");
+        horaInicio = new TextField("Hora de inicio");
         horaInicio.setWidth("300px");
-        horaFin = new TimePicker("Hora de fin");
+        horaFin = new TextField("Hora de fin");
         horaFin.setWidth("300px");
         horario.add(horaInicio, horaFin);
 
-        agregar = new Button("AGREGAR NUEVO CURSO");
-        agregar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        agregar.setIcon(VaadinIcon.EXTERNAL_BROWSER.create());
-        agregar.addClickListener(e->{
+        modificar = new Button("MODIFICAR CURSO");
+        modificar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        modificar.setIcon(VaadinIcon.EDIT.create());
+        modificar.addClickListener(e->{
             //if de cosas bien
-            Notification.show("Curso agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            Notification.show("Curso modificado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         });
-        add(titulo, datos, horas, dia, horario, agregar);
+        add(titulo, datos, horas, dia, horario, modificar);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);

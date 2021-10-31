@@ -1,12 +1,15 @@
-package Vista.views;
+package Vista;
 
+import Vista.Admin.MenuAdmin;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -21,7 +24,7 @@ public class LogIn extends VerticalLayout {
 
     private H1 nombre;
     private H2 inicio;
-    private TextField correo;
+    private EmailField correo;
     private PasswordField contrasena;
     private Button iniciar;
 
@@ -34,7 +37,7 @@ public class LogIn extends VerticalLayout {
         nombre = new H1("AULA VIRTUAL");
         inicio = new H2("Inicio de sesión");
 
-        correo = new TextField("Correo");
+        correo = new EmailField("Correo");
         correo.setWidth("400px");
         Component mail = VaadinIcon.ENVELOPE_O.create();
         correo.setPrefixComponent(mail);
@@ -45,10 +48,11 @@ public class LogIn extends VerticalLayout {
         contrasena.setPrefixComponent(contra);
         contrasena.setWidth("400px");
 
-        iniciar = new Button("Iniciar sesión", VaadinIcon.UNLOCK.create());
+        iniciar = new Button("INICIAR SESIÓN", VaadinIcon.UNLOCK.create());
         iniciar.setIconAfterText(true);
+        iniciar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         iniciar.addClickListener(e->{
-            UI.getCurrent().navigate(Menu.class);
+            UI.getCurrent().navigate(MenuAdmin.class);
         });
         add(nombre, inicio, correo, contrasena, iniciar);
         setSizeFull();
