@@ -2,6 +2,7 @@ package Vista;
 
 import Vista.Admin.MenuAdmin;
 import Vista.Docente.MenuDocente;
+import Vista.Estudiante.MenuEstudiante;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -55,8 +56,10 @@ public class LogIn extends VerticalLayout {
         iniciar.addClickListener(e->{
             if (correo.getValue().equals("1"))
                 UI.getCurrent().navigate(MenuAdmin.class);
-            else
+            else if (correo.getValue().equals("2"))
                 UI.getCurrent().navigate(MenuDocente.class);
+            else
+                UI.getCurrent().navigate(MenuEstudiante.class);
         });
         add(nombre, inicio, correo, contrasena, iniciar);
         setSizeFull();

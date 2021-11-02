@@ -1,30 +1,23 @@
-package Vista.Docente;
+package Vista.Estudiante;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import Vista.Docente.*;
 import Vista.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.router.PageTitle;
 
-@PageTitle("Docente")
-@Route(value = "docente", layout = MainLayout.class)
+import java.util.ArrayList;
+import java.util.List;
 
-public class MenuDocente extends AppLayout {
+
+@PageTitle("Estudiante")
+@Route(value = "estudiante", layout = MainLayout.class)
+public class MenuEstudiante extends AppLayout {
 
     public static class MenuItemInfo {
 
@@ -54,8 +47,8 @@ public class MenuDocente extends AppLayout {
 
     private H1 viewTitle;
 
-    public MenuDocente() {
-        setPrimarySection(Section.DRAWER);
+    public MenuEstudiante() {
+        setPrimarySection(AppLayout.Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
     }
@@ -107,22 +100,22 @@ public class MenuDocente extends AppLayout {
     }
 
     private List<RouterLink> createLinks() {
-        MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Lista de cursos", "la la-list", ListaCursosDocente.class),
-                new MenuItemInfo("Enviar noticia", "la la-envelope", EnviarNoticia.class),
-                new MenuItemInfo("Asignar tarea", "la la-book", AsignarTarea.class),
-                new MenuItemInfo("Chat", "la la-comments", Vista.Docente.ChatDocentes.class),
-                new MenuItemInfo("Ver estudiantes", "la la-users", VerEstudiantes.class)
+        MenuDocente.MenuItemInfo[] menuItems = new MenuDocente.MenuItemInfo[]{ //
+                new MenuDocente.MenuItemInfo("Lista de cursos", "la la-list", ListaCursosEstudiante.class),
+                new MenuDocente.MenuItemInfo("Ver noticias", "la la-envelope", VerNoticias.class),
+                new MenuDocente.MenuItemInfo("Ver tareas", "la la-book", VerTareas.class),
+                new MenuDocente.MenuItemInfo("Chat", "la la-comments", ChatEstudiante.class),
+                new MenuDocente.MenuItemInfo("Docente curso", "la la-user", VerProfesor.class)
         };
         List<RouterLink> links = new ArrayList<>();
-        for (MenuItemInfo menuItemInfo : menuItems) {
+        for (MenuDocente.MenuItemInfo menuItemInfo : menuItems) {
             links.add(createLink(menuItemInfo));
 
         }
         return links;
     }
 
-    private static RouterLink createLink(MenuItemInfo menuItemInfo) {
+    private static RouterLink createLink(MenuDocente.MenuItemInfo menuItemInfo) {
         RouterLink link = new RouterLink();
         link.addClassNames("flex", "mx-s", "p-s", "relative", "text-secondary");
         link.setRoute(menuItemInfo.getView());
@@ -157,4 +150,3 @@ public class MenuDocente extends AppLayout {
         return title == null ? "" : title.value();
     }
 }
-

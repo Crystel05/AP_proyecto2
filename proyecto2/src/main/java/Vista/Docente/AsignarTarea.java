@@ -48,7 +48,7 @@ public class AsignarTarea extends VerticalLayout {
         enviar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         enviar.setWidth("150px");
         enviar.setIcon(VaadinIcon.BOOK.create());
-        add(tituloPagina, ID, idCursos, tituloNoticia, contenido, enviar);
+        add(tituloPagina, idCursos, ID, tituloNoticia, contenido, enviar);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);

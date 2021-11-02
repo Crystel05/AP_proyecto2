@@ -8,8 +8,6 @@ import Vista.Admin.GestionCursos.AdminListaCursos;
 import Vista.Admin.GestionDocentes.AdminListaDocentes;
 import Vista.Admin.GestionEstudiantes.AdminListaEstudiantes;
 import Vista.MainLayout;
-import Vista.chat.ChatView;
-import Vista.helloworld.HelloWorldView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
