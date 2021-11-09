@@ -1,5 +1,7 @@
 package Vista;
 
+import Controlador.Controlador;
+import Controlador.TipoUsuario;
 import Vista.Admin.MenuAdmin;
 import Vista.Docente.MenuDocente;
 import Vista.Estudiante.MenuEstudiante;
@@ -10,6 +12,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -18,12 +22,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import javax.naming.ldap.Control;
+
 @PageTitle("Inicio de sesión")
 @Route(value = "login", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 
 public class LogIn extends VerticalLayout {
 
+    private Controlador controlador = Controlador.getInstance();
     private H1 nombre;
     private H2 inicio;
     private EmailField correo;
@@ -53,17 +60,31 @@ public class LogIn extends VerticalLayout {
         iniciar = new Button("INICIAR SESIÓN", VaadinIcon.UNLOCK.create());
         iniciar.setIconAfterText(true);
         iniciar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        iniciar.addClickListener(e->{
-            if (correo.getValue().equals("1"))
-                UI.getCurrent().navigate(MenuAdmin.class);
-            else if (correo.getValue().equals("2"))
-                UI.getCurrent().navigate(MenuDocente.class);
-            else
-                UI.getCurrent().navigate(MenuEstudiante.class);
-        });
+        iniciar.addClickListener(e-> iniciarSesion());
         add(nombre, inicio, correo, contrasena, iniciar);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+    }
+
+    private void iniciarSesion() {
+        TipoUsuario tipoUsuario = controlador.iniciarSesion(correo.getValue(), contrasena.getValue());
+        if (tipoUsuario!=null) {
+            switch (tipoUsuario) {
+                case administrador:
+                    UI.getCurrent().navigate(MenuAdmin.class);
+                    break;
+                case estudiante:
+                    UI.getCurrent().navigate(MenuEstudiante.class);
+                    break;
+                case profesor:
+                    UI.getCurrent().navigate(MenuDocente.class);
+                    break;
+            }
+        }else{
+            Notification.show("Usuario o contraseña inválidos, intente de nuevo", 5000, Notification.Position.MIDDLE).
+                    addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
     }
 }
