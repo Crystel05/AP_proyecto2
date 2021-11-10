@@ -1,5 +1,5 @@
 package Modelo;
 
 public enum Grado {
-    Primero, Segundo, Tercero, Cuarto, Quinto, Sexto
+    Preparatoria, Primero, Segundo, Tercero, Cuarto, Quinto, Sexto, Septimo, Undecimo
 }
