@@ -1,5 +1,11 @@
 package Vista.Estudiante;
 
+import Controlador.ControladorEstudiante;
+import Modelo.Curso;
+import Modelo.Grado;
+import Modelo.Tarea_Noticia;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,18 +16,24 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.util.ArrayList;
+
 @PageTitle("Ver noticias")
 @Route(value = "verNoticias", layout = MenuEstudiante.class)
 public class VerNoticias extends VerticalLayout {
 
     private Tabs cursos;
+    private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
 
     public VerNoticias() {
         ventana();
     }
 
     private void ventana() {
-        cursos = new Tabs(new Tab("Curso mat"));
+        cursos = new Tabs();
+        for (Curso c : estudiante.getCursosActuales()){
+            cursos.add(new Tab(c.getNombre()));
+        }
         cursos.setWidthFull();
 
         VerticalLayout tarea  = new VerticalLayout();
@@ -102,11 +114,79 @@ public class VerNoticias extends VerticalLayout {
         HorizontalLayout tareas2 = new HorizontalLayout();
         tareas2.add(tarea4, tarea5, tarea6);
 
+        ArrayList<TextField> titulos = new ArrayList<>();
+        titulos.add(titulo);titulos.add(titulo2);titulos.add(titulo3);titulos.add(titulo4);titulos.add(titulo5);titulos.add(titulo6);
+        ArrayList<TextArea> descripciones = new ArrayList<>();
+        descripciones.add(contenido);descripciones.add(contenido2);descripciones.add(contenido3);descripciones.add(contenido4);descripciones.add(contenido5);descripciones.add(contenido6);
+
+        for (int i = 0; i< titulos.size(); i++){
+            titulos.get(i).setVisible(false);
+            descripciones.get(i).setVisible(false);
+        }
+
         cursos.addSelectedChangeListener(event -> {
             String channelName = event.getSelectedTab().getLabel();
+            for (Curso curso : estudiante.getCursosActuales()){
+                if (curso.getNombre().equals(channelName)){
+                    String grado = convertirGrado(curso.getGrado());
+                    ArrayList<Tarea_Noticia> noticias = estudiante.noticias(curso.getID(), grado);
+                    if (noticias != null && noticias.size()>0){
+                        int cant = noticias.size()-1;
+                        if (noticias.size()>6)
+                            cant = 6;
+                        for (int i = 0; i < cant; i++){
+                            titulos.get(i).setValue(noticias.get(i).getTitulo());
+                            titulos.get(i).setVisible(true);
+                            descripciones.get(i).setValue(noticias.get(i).getContenido());
+                            descripciones.get(i).setVisible(true);
+                        }
+                    }else{
+                        for (int i = 0; i < titulos.size()-1; i++){
+                            titulos.get(i).setVisible(false);
+                            descripciones.get(i).setVisible(false);
+                        }
+                        Notification.show("No hay noticias sin leer :)!", 5000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    }
+                }
+            }
         });
+
         add(cursos, tareas, tareas2);
         setSizeFull();
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+    }
+
+    private String convertirGrado(Grado grado) {
+        String gra = "";
+        switch (grado){
+            case Primero:
+                gra = "1";
+                break;
+            case Segundo:
+                gra = "2";
+                break;
+            case Cuarto:
+                gra = "4";
+                break;
+            case Quinto:
+                gra = "5";
+                break;
+            case Sexto:
+                gra = "6";
+                break;
+            case Septimo:
+                gra = "7";
+                break;
+            case Preparatoria:
+                gra = "prepa";
+                break;
+            case Undecimo:
+                gra = "11";
+                break;
+            case Tercero:
+                gra = "3";
+                break;
+        }
+        return gra;
     }
 }

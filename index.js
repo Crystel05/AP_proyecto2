@@ -564,7 +564,38 @@ app.get("/publicaMsg/:curso/:grado/:correo/:mensaje", async(req, res)=>{
 })
 
 //Inserta mensajes en un chat, ENTRADAS: ID del chat y del escritor ademas del mensaje SALIDA: numero de resultado(0 si salio bien)
-app.get("/votarNota/:cedula/:nuevanota", async(req, res)=>{
+app.get("/Docente docente = new Docente();
+String get = "https://nodejsclusters-57268-0.cloudclusters.net/profesores/"+ cedulaProfesor(cod, clase);
+try {
+    URL url = new URL(get);
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestMethod("GET");
+    connection.connect();
+
+    int responseCode = connection.getResponseCode();
+    if (responseCode == 200) {
+        StringBuilder info = new StringBuilder();
+        Scanner scanner = new Scanner(url.openStream());
+
+        while (scanner.hasNext()) {
+            info.append(scanner.nextLine());
+        }
+
+        scanner.close();
+
+        JSONParser parser = new JSONParser();
+        JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
+        JSONObject data = (JSONObject) array.get(0);
+        docente.setCalificacion(Float.parseFloat(data.get("calificacion").toString()));
+        docente.setCedula(data.get("cedula").toString());
+        docente.setNombre(data.get("nombre") + " " + data.get("apellido"));
+        docente.setCorreo(data.get("correo").toString());
+    }
+}catch (IOException | ParseException | IndexOutOfBoundsException e){
+    e.printStackTrace();
+    return null;
+}
+return docente;/:cedula/:nuevanota", async(req, res)=>{
     const { cedula } = req.params
     const { nuevanota } = req.params
     try{

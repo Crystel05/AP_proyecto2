@@ -1,12 +1,20 @@
 package Vista.Estudiante;
 
 import java.util.ArrayList;
+
+import Controlador.ControladorEstudiante;
+import Modelo.Curso;
+import Modelo.Grado;
+import Modelo.Mensaje;
+import Modelo.Tarea_Noticia;
 import com.vaadin.collaborationengine.CollaborationMessageList;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -26,6 +34,9 @@ public class ChatEstudiante extends VerticalLayout {
     private TextField mensaje;
     private Button enviar;
     private MessageListItem enviado;
+    private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
+    private ArrayList<Mensaje> mensajesDB = new ArrayList<>();
+    private Curso cursoActual = null;
 
     public ChatEstudiante() {
         addClassName("chat-view");
@@ -38,11 +49,14 @@ public class ChatEstudiante extends VerticalLayout {
 
         userInfo = new UserInfo("10", "Prueba"); //cambiar por los usarios de la base de datos
 
-        tabs = new Tabs(new Tab("#Curso mat"));
+        tabs = new Tabs();
+        for (Curso c : estudiante.getCursosActuales()) {
+            tabs.add(new Tab(c.getNombre()));
+        }
         tabs.setWidthFull();
 
         list = new CollaborationMessageList(userInfo, "chat/#Curso mat");
-        listaMensajes(null);
+      //  listaMensajes(null, mensajesDB);
         list.setWidthFull();
 
         list.addClassNames("chat-view-message-list");
@@ -59,7 +73,14 @@ public class ChatEstudiante extends VerticalLayout {
         enviado.setUserColorIndex(2);
         enviar.addClickListener(e->{
             enviado.setText(mensaje.getValue());
-            listaMensajes(enviado);
+            listaMensajes(enviado, mensajesDB);
+            Notification.show(cursoActual.getID() + " " + convertirGrado(cursoActual.getGrado()) + " " +
+                    estudiante.getEstudianteActual().getCorreo() + mensaje.getValue());
+            boolean var = estudiante.enviarMensaje(cursoActual.getID(), convertirGrado(cursoActual.getGrado()),
+                    estudiante.getEstudianteActual().getCorreo(), mensaje.getValue());
+            if (var){
+                Notification.show("todo good");
+            }
             mensaje.clear();
         });
 
@@ -70,25 +91,74 @@ public class ChatEstudiante extends VerticalLayout {
         tabs.addSelectedChangeListener(event -> {
             String channelName = event.getSelectedTab().getLabel();
             list.setTopic("chat/" + channelName);
+            for (Curso curso : estudiante.getCursosActuales()){
+                if (curso.getNombre().equals(channelName)){
+                    String grado = convertirGrado(curso.getGrado());
+                    mensajesDB = estudiante.listaMensajesCurso(curso.getID(), grado);
+                    listaMensajes(null, mensajesDB);
+                    cursoActual = curso;
+                }
+            }
         });
     }
 
-    private void listaMensajes(MessageListItem enviado){
+    private void listaMensajes(MessageListItem enviado, ArrayList<Mensaje> mensajesDB){
         ArrayList<MessageListItem> mensajes = new ArrayList<>();
-        MessageListItem mensaje1 = new MessageListItem(); // agregar los mensajes de la base de datos
-        mensaje1.setUserName("Pablito");
-        mensaje1.setUserColorIndex(6); //7 es la cantidad máxima
-        mensaje1.setText("Hola");
-        MessageListItem mensaje2 = new MessageListItem();
-        mensaje2.setUserName("Juan");
-        mensaje2.setText("Hola");
-        mensaje2.setUserColorIndex(5);
-        mensajes.add(mensaje1);
-        mensajes.add(mensaje2);
+        if (mensajesDB.size()>0){
+            for (Mensaje m: mensajesDB){
+                MessageListItem mensajeNuevo = new MessageListItem();
+                mensajeNuevo.setUserName(m.getUsuario().getNombre());
+                mensajeNuevo.setText(m.getContenido());
+                mensajeNuevo.setUserColorIndex(generarColor());
+                mensajes.add(mensajeNuevo);
+            }
+        }
         if (enviado != null){
             mensajes.add(enviado);
         }
         list.getContent().setItems(mensajes);
+    }
+
+    private Integer generarColor(){
+        int num = (int) (Math.random()* 7+1);
+        while(num == 2){
+            num = (int) (Math.random()* 7+1);
+        }
+        return num;
+    }
+
+    private String convertirGrado(Grado grado) {
+        String gra = "";
+        switch (grado){
+            case Primero:
+                gra = "1";
+                break;
+            case Segundo:
+                gra = "2";
+                break;
+            case Cuarto:
+                gra = "4";
+                break;
+            case Quinto:
+                gra = "5";
+                break;
+            case Sexto:
+                gra = "6";
+                break;
+            case Septimo:
+                gra = "7";
+                break;
+            case Preparatoria:
+                gra = "prepa";
+                break;
+            case Undecimo:
+                gra = "11";
+                break;
+            case Tercero:
+                gra = "3";
+                break;
+        }
+        return gra;
     }
 
 }

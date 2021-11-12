@@ -129,7 +129,6 @@ public class Controlador {
                 JSONParser parser = new JSONParser();
                 JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
                 JSONObject data = (JSONObject) array.get(0);
-                System.out.println(data);
                 Grado grado = null;
                 switch (data.get("clase").toString()){
                     case "prepa":

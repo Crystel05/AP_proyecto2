@@ -31,6 +31,10 @@ public class Usuario {
         this.cedula = cedula;
     }
 
+    public Usuario(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Usuario() {
     }
 
