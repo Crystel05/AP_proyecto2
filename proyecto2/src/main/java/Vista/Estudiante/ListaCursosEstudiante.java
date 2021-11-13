@@ -25,13 +25,8 @@ public class ListaCursosEstudiante extends VerticalLayout {
 
     private void ventana() {
         ArrayList<Curso> cursosLista = controlador.cursosEstudiante();
-//        for (Curso c: cursosLista){
-//            System.out.println(c.getNombre());
-//        }
         cursos = new Grid<>(Curso.class, false);
         listaCursos.addAll(cursosLista);
-//        listaCursos.add(new Curso("mat", "Matemáticas", Grado.Cuarto, "Martes a las 7"));
-//        listaCursos.add(new Curso("cien", "Ciencias", Grado.Primero, "Miércoles 8:00am-9:00am"));
         cursos.setItems(listaCursos);
         cursos.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         cursos.setColumns("ID", "nombre", "grado", "horario");

@@ -3,10 +3,9 @@ package Vista.Estudiante;
 import java.util.ArrayList;
 
 import Controlador.ControladorEstudiante;
+import Controlador.DummyMethods;
 import Modelo.Curso;
-import Modelo.Grado;
 import Modelo.Mensaje;
-import Modelo.Tarea_Noticia;
 import com.vaadin.collaborationengine.CollaborationMessageList;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.button.Button;
@@ -23,7 +22,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Chat estudiante")
+@PageTitle("Chat Estudiante")
 @Route(value = "chatE", layout = MenuEstudiante.class)
 public class ChatEstudiante extends VerticalLayout {
 
@@ -37,6 +36,7 @@ public class ChatEstudiante extends VerticalLayout {
     private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
     private ArrayList<Mensaje> mensajesDB = new ArrayList<>();
     private Curso cursoActual = null;
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public ChatEstudiante() {
         addClassName("chat-view");
@@ -47,8 +47,10 @@ public class ChatEstudiante extends VerticalLayout {
 
         setSpacing(false);
 
-        userInfo = new UserInfo("10", "Prueba"); //cambiar por los usarios de la base de datos
-
+        if (estudiante.getEstudianteActual() != null)
+            userInfo = new UserInfo(estudiante.getEstudianteActual().getCedula(), estudiante.getEstudianteActual().getNombre()); //cambiar por los usarios de la base de datos
+        else
+            userInfo = new UserInfo("1", "a");
         tabs = new Tabs();
         for (Curso c : estudiante.getCursosActuales()) {
             tabs.add(new Tab(c.getNombre()));
@@ -56,7 +58,6 @@ public class ChatEstudiante extends VerticalLayout {
         tabs.setWidthFull();
 
         list = new CollaborationMessageList(userInfo, "chat/#Curso mat");
-      //  listaMensajes(null, mensajesDB);
         list.setWidthFull();
 
         list.addClassNames("chat-view-message-list");
@@ -72,14 +73,12 @@ public class ChatEstudiante extends VerticalLayout {
         enviado.setUserName(userInfo.getName());
         enviado.setUserColorIndex(2);
         enviar.addClickListener(e->{
-            enviado.setText(mensaje.getValue());
-            listaMensajes(enviado, mensajesDB);
-            Notification.show(cursoActual.getID() + " " + convertirGrado(cursoActual.getGrado()) + " " +
-                    estudiante.getEstudianteActual().getCorreo() + mensaje.getValue());
-            boolean var = estudiante.enviarMensaje(cursoActual.getID(), convertirGrado(cursoActual.getGrado()),
-                    estudiante.getEstudianteActual().getCorreo(), mensaje.getValue());
-            if (var){
-                Notification.show("todo good");
+            if(estudiante.getControlador().enviarMensaje(cursoActual.getID(), dummyMethods.convertirGrado(cursoActual.getGrado()),
+                    estudiante.getEstudianteActual().getCorreo(), mensaje.getValue())){
+                enviado.setText(mensaje.getValue());
+                dummyMethods.listaMensajes(enviado, mensajesDB, list);
+            }else{
+                Notification.show("Error al enviar el mensaje").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             mensaje.clear();
         });
@@ -93,72 +92,13 @@ public class ChatEstudiante extends VerticalLayout {
             list.setTopic("chat/" + channelName);
             for (Curso curso : estudiante.getCursosActuales()){
                 if (curso.getNombre().equals(channelName)){
-                    String grado = convertirGrado(curso.getGrado());
-                    mensajesDB = estudiante.listaMensajesCurso(curso.getID(), grado);
-                    listaMensajes(null, mensajesDB);
+                    String grado = dummyMethods.convertirGrado(curso.getGrado());
+                    mensajesDB = estudiante.getControlador().listaMensajesCurso(curso.getID(), grado);
+                    dummyMethods.listaMensajes(null, mensajesDB, list);
                     cursoActual = curso;
                 }
             }
         });
-    }
-
-    private void listaMensajes(MessageListItem enviado, ArrayList<Mensaje> mensajesDB){
-        ArrayList<MessageListItem> mensajes = new ArrayList<>();
-        if (mensajesDB.size()>0){
-            for (Mensaje m: mensajesDB){
-                MessageListItem mensajeNuevo = new MessageListItem();
-                mensajeNuevo.setUserName(m.getUsuario().getNombre());
-                mensajeNuevo.setText(m.getContenido());
-                mensajeNuevo.setUserColorIndex(generarColor());
-                mensajes.add(mensajeNuevo);
-            }
-        }
-        if (enviado != null){
-            mensajes.add(enviado);
-        }
-        list.getContent().setItems(mensajes);
-    }
-
-    private Integer generarColor(){
-        int num = (int) (Math.random()* 7+1);
-        while(num == 2){
-            num = (int) (Math.random()* 7+1);
-        }
-        return num;
-    }
-
-    private String convertirGrado(Grado grado) {
-        String gra = "";
-        switch (grado){
-            case Primero:
-                gra = "1";
-                break;
-            case Segundo:
-                gra = "2";
-                break;
-            case Cuarto:
-                gra = "4";
-                break;
-            case Quinto:
-                gra = "5";
-                break;
-            case Sexto:
-                gra = "6";
-                break;
-            case Septimo:
-                gra = "7";
-                break;
-            case Preparatoria:
-                gra = "prepa";
-                break;
-            case Undecimo:
-                gra = "11";
-                break;
-            case Tercero:
-                gra = "3";
-                break;
-        }
-        return gra;
     }
 
 }

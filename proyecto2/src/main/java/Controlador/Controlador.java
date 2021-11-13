@@ -2,6 +2,7 @@ package Controlador;
 
 import Modelo.Curso;
 import Modelo.Grado;
+import Modelo.Mensaje;
 import Modelo.Usuario;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,12 +12,15 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Controlador {
 
     private static Controlador controlador;
     private Usuario usuarioActual;
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public Controlador(){}
 
@@ -129,34 +133,7 @@ public class Controlador {
                 JSONParser parser = new JSONParser();
                 JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
                 JSONObject data = (JSONObject) array.get(0);
-                Grado grado = null;
-                switch (data.get("clase").toString()){
-                    case "prepa":
-                    case "1":
-                        grado = Grado.Preparatoria;
-                        break;
-                    case "2":
-                        grado = Grado.Primero;
-                        break;
-                    case "3":
-                        grado = Grado.Segundo;
-                        break;
-                    case "4":
-                        grado = Grado.Cuarto;
-                        break;
-                    case "5":
-                        grado = Grado.Quinto;
-                        break;
-                    case "6":
-                        grado = Grado.Sexto;
-                        break;
-                    case "7":
-                        grado = Grado.Septimo;
-                        break;
-                    case "11":
-                        grado = Grado.Undecimo;
-                        break;
-                }
+                Grado grado = dummyMethods.convertirGradoBD(data.get("clase").toString());
                 String horario = data.get("diaSemana") + " desde " + data.get("horaInicio") + " hasta " +data.get("horaFin");
                 return new Curso(cod, data.get("nombre").toString(), grado, horario);
             }
@@ -164,6 +141,76 @@ public class Controlador {
             return null;
         }
         return null;
+    }
+
+    public ArrayList<Mensaje> listaMensajesCurso(String codigo, String grado){
+        ArrayList<Mensaje> mensajes = new ArrayList<>();
+        String get = "https://nodejsclusters-57268-0.cloudclusters.net/chat/"+ codigo + "/"+ grado;
+        try {
+            URL url = new URL(get);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200) {
+                StringBuilder info = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+
+                while (scanner.hasNext()) {
+                    info.append(scanner.nextLine());
+                }
+
+                scanner.close();
+
+                JSONParser parser = new JSONParser();
+                JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
+                for (Object o: array){
+                    JSONObject data = (JSONObject) o;
+                    mensajes.add(new Mensaje(new Usuario(data.get("nombre").toString()), data.get("texto").toString()));
+                }
+            }else{
+                return null;
+            }
+        }catch (IOException | ParseException | IndexOutOfBoundsException e){
+            e.printStackTrace();
+            return null;
+        }
+        Collections.reverse(mensajes);
+        return mensajes;
+    }
+
+    public boolean enviarMensaje(String codigo, String grado, String correo, String mensaje){
+        String get = "https://nodejsclusters-57268-0.cloudclusters.net/publicaMsg/"+ codigo + "/"+ grado + "/" + correo + "/" + mensaje;
+        try {
+            URL url = new URL(get);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200) {
+                StringBuilder info = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+
+                while (scanner.hasNext()) {
+                    info.append(scanner.nextLine());
+                }
+
+                scanner.close();
+
+                JSONParser parser = new JSONParser();
+                JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
+                JSONObject data = (JSONObject) array.get(0);
+
+            }else{
+                return false;
+            }
+        }catch (IOException | ParseException | IndexOutOfBoundsException e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static void main(String[] args) throws IOException, ParseException {

@@ -71,7 +71,7 @@ app.get("/tipoUsuario/:IdUsu", async(req, res)=>{
 //Dar todos los cursos a Admin, ENTRADAS: ninguna SALIDA: todos los cursos
 app.get("/cursos", async(req, res)=>{
     try{
-        const cursos = await pool.query("SELECT curso.codigo, clase, curso.nombre FROM curso INNER JOIN grado ON curso.\"gradoId\" = grado.\"ID\"");
+        const cursos = await pool.query("SELECT curso.codigo, clase, curso.nombre, curso.\"horaInicio\", curso.\"horaFin\", curso.\"diaSemana\" FROM curso INNER JOIN grado ON curso.\"gradoId\" = grado.\"ID\"");
         res.json(cursos.rows)
 
     }catch(err) {
@@ -130,7 +130,7 @@ app.get("/cursos/info/:cod/:clase", async(req, res)=>{
 //Lista de todos los profesores, ENTRADAS: ninguna SALIDA:lista de todos los profesores
 app.get("/profesores", async(req, res)=>{
     try{
-        const usuarios = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.cedula FROM profesor INNER JOIN usuario ON profesor.\"usuarioId\" = usuario.\"ID\"");
+        const usuarios = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.contrasenna, usuario.cedula, usuario.correo, calificacion FROM profesor INNER JOIN usuario ON profesor.\"usuarioId\" = usuario.\"ID\"");
         res.json(usuarios.rows)
 
     }catch(err) {
@@ -186,7 +186,7 @@ app.get("/CedPorCurso/:cod/:grad", async(req, res)=>{
 //Lista de todos los alumnos, ENTRADAS: nada SALIDA: Lista de todos los estudiantes
 app.get("/estudiantes", async(req, res)=>{
     try{
-        const estudiantes = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.nombre, grado.clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\"");
+        const estudiantes = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.contrasenna, usuario.cedula, usuario.correo, grado.clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\"");
         res.json(estudiantes.rows)
 
     }catch(err) {
@@ -450,7 +450,7 @@ app.get("/asignarAlumno/:nombre/:apellido/:codigo/:grado", async(req, res)=>{
 app.get("/estudiantesCed/:ced", async(req, res)=>{
     const { ced } = req.params
     try{
-        const estudiante = await pool.query("SELECT nombre, cedula, apellido, clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\" WHERE cedula = $1", [ced]);
+        const estudiante = await pool.query("SELECT nombre, cedula, apellido, clase, correo FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\" WHERE cedula = $1", [ced]);
         res.json(estudiante.rows)
 
     }catch(err) {
@@ -564,38 +564,7 @@ app.get("/publicaMsg/:curso/:grado/:correo/:mensaje", async(req, res)=>{
 })
 
 //Inserta mensajes en un chat, ENTRADAS: ID del chat y del escritor ademas del mensaje SALIDA: numero de resultado(0 si salio bien)
-app.get("/Docente docente = new Docente();
-String get = "https://nodejsclusters-57268-0.cloudclusters.net/profesores/"+ cedulaProfesor(cod, clase);
-try {
-    URL url = new URL(get);
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
-    connection.connect();
-
-    int responseCode = connection.getResponseCode();
-    if (responseCode == 200) {
-        StringBuilder info = new StringBuilder();
-        Scanner scanner = new Scanner(url.openStream());
-
-        while (scanner.hasNext()) {
-            info.append(scanner.nextLine());
-        }
-
-        scanner.close();
-
-        JSONParser parser = new JSONParser();
-        JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
-        JSONObject data = (JSONObject) array.get(0);
-        docente.setCalificacion(Float.parseFloat(data.get("calificacion").toString()));
-        docente.setCedula(data.get("cedula").toString());
-        docente.setNombre(data.get("nombre") + " " + data.get("apellido"));
-        docente.setCorreo(data.get("correo").toString());
-    }
-}catch (IOException | ParseException | IndexOutOfBoundsException e){
-    e.printStackTrace();
-    return null;
-}
-return docente;/:cedula/:nuevanota", async(req, res)=>{
+app.get("/votarNota/:cedula/:nuevanota", async(req, res)=>{
     const { cedula } = req.params
     const { nuevanota } = req.params
     try{

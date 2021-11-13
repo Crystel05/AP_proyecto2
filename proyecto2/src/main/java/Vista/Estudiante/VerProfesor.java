@@ -1,6 +1,7 @@
 package Vista.Estudiante;
 
 import Controlador.ControladorEstudiante;
+import Controlador.DummyMethods;
 import Modelo.Curso;
 import Modelo.Docente;
 import Modelo.Grado;
@@ -28,6 +29,7 @@ public class VerProfesor extends VerticalLayout {
     private Integer calificacion = 0;
     private Docente docenteActual;
     private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public VerProfesor() {
         ventana();
@@ -80,7 +82,7 @@ public class VerProfesor extends VerticalLayout {
             String channelName = event.getSelectedTab().getLabel();
             for (Curso curso : estudiante.getCursosActuales()){
                 if (curso.getNombre().equals(channelName)){
-                    Docente d = estudiante.detallesProfesor(curso.getID(), convertirGrado(curso.getGrado()));
+                    Docente d = estudiante.detallesProfesor(curso.getID(), dummyMethods.convertirGrado(curso.getGrado()));
                     docenteActual = d;
                     if (d != null) {
                         nombre.setText(d.getNombre());
@@ -223,37 +225,4 @@ public class VerProfesor extends VerticalLayout {
         calificacion = cant;
     }
 
-    private String convertirGrado(Grado grado) {
-        String gra = "";
-        switch (grado){
-            case Primero:
-                gra = "1";
-                break;
-            case Segundo:
-                gra = "2";
-                break;
-            case Cuarto:
-                gra = "4";
-                break;
-            case Quinto:
-                gra = "5";
-                break;
-            case Sexto:
-                gra = "6";
-                break;
-            case Septimo:
-                gra = "7";
-                break;
-            case Preparatoria:
-                gra = "prepa";
-                break;
-            case Undecimo:
-                gra = "11";
-                break;
-            case Tercero:
-                gra = "3";
-                break;
-        }
-        return gra;
-    }
 }

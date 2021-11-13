@@ -14,7 +14,9 @@ public class Curso {
         this.horario = horario;
     }
 
-    public Curso() {
+    public Curso(String codigo, String nombre) {
+        this.ID = codigo;
+        this.nombre = nombre;
     }
 
     public String getID() {

@@ -1,6 +1,7 @@
 package Vista.Estudiante;
 
 import Controlador.ControladorEstudiante;
+import Controlador.DummyMethods;
 import Modelo.Curso;
 import Modelo.Grado;
 import Modelo.Tarea_Noticia;
@@ -15,6 +16,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.util.unit.DataUnit;
 
 import java.util.ArrayList;
 
@@ -24,6 +26,7 @@ public class VerTareas extends VerticalLayout {
 
     private Tabs cursos;
     private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public VerTareas() {
         ventana();
@@ -127,7 +130,7 @@ public class VerTareas extends VerticalLayout {
             String channelName = event.getSelectedTab().getLabel();
             for (Curso curso : estudiante.getCursosActuales()){
                 if (curso.getNombre().equals(channelName)){
-                    String grado = convertirGrado(curso.getGrado());
+                    String grado = dummyMethods.convertirGrado(curso.getGrado());
                     ArrayList<Tarea_Noticia> tareasLista = estudiante.tareas(curso.getID(), grado);
                     if (tareasLista != null && tareasLista.size()>0){
                         for (int i = 0; i < tareasLista.size()-1; i++){
@@ -152,37 +155,4 @@ public class VerTareas extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
     }
 
-    private String convertirGrado(Grado grado) {
-        String gra = "";
-        switch (grado){
-            case Primero:
-                gra = "1";
-                break;
-            case Segundo:
-                gra = "2";
-                break;
-            case Cuarto:
-                gra = "4";
-                break;
-            case Quinto:
-                gra = "5";
-                break;
-            case Sexto:
-                gra = "6";
-                break;
-            case Septimo:
-                gra = "7";
-                break;
-            case Preparatoria:
-                gra = "prepa";
-                break;
-            case Undecimo:
-                gra = "11";
-                break;
-            case Tercero:
-                gra = "3";
-                break;
-        }
-        return gra;
-    }
 }
