@@ -7,8 +7,8 @@ public class Curso {
     private Grado grado;
     private String horario;
 
-
     public Curso(){}
+
     public Curso(String ID, String nombre, Grado grado, String horario) {
         this.ID = ID;
         this.nombre = nombre;

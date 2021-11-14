@@ -57,8 +57,16 @@ public class AdminListaEstudiantes extends VerticalLayout {
         verCursos.addItemClickListener(e->{
             //primero dar dovbel click y luego ver cursos
             cursosD.removeAll();
-            cursosD.add(cargarCursosXEstudiante());
-            cursosD.open();
+            Grid<Curso> cursosEsts = new Grid<>(Curso.class, false);
+            cursosEsts.setColumns("ID", "nombre");
+            if (controlador.getEstudiante() != null) {
+                cursosEsts.setItems(Controlador.CursosXEstudiante(controlador.getEstudiante().getCedula()));
+                cursosEsts.setWidth("400px");
+                cursosEsts.setHeight("200px");
+                cursosEsts.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+                cursosD.add(cursosEsts);
+                cursosD.open();
+            }
         });
         eliminar_editar.add("¿Desea eliminar o editar el estudiante?");
         Button eliminar = new Button("ElIMINAR");
@@ -71,6 +79,8 @@ public class AdminListaEstudiantes extends VerticalLayout {
         eliminar.addClickListener(e->{
             if (Controlador.EliminarEstudiante(controlador.getEstudiante().getCedula())){
                 Notification.show("Docente " + controlador.getEstudiante().getNombre() + " eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                listaEstudiantes = Controlador.CargarEstudiantes();
+                estudiantes.setItems(listaEstudiantes);
             } else{
                 Notification.show("Docente no eliminado").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }

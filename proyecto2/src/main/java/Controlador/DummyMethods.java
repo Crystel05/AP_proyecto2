@@ -57,7 +57,7 @@ public class DummyMethods {
             case Septimo:
                 gra = "7";
                 break;
-            case Preparatoria:
+            case Prepa:
                 gra = "prepa";
                 break;
             case Undecimo:
@@ -73,7 +73,7 @@ public class DummyMethods {
     public Grado convertirGradoBD(String gradoBD){
         switch (gradoBD){
             case "prepa":
-                return Grado.Preparatoria;
+                return Grado.Prepa;
             case "1":
                 return Grado.Primero;
             case "2":

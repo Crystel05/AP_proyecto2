@@ -56,6 +56,8 @@ public class AdminListaCursos extends VerticalLayout {
         eliminar.addClickListener(e->{
             if (Controlador.DeleteCurso(controlador.getCurso().getID(), controlador.getCurso().getGrado().getClase())){
                 Notification.show("Curso eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                listaCursos = loadCursos();
+                cursos.setItems(listaCursos);
             } else{
                 Notification.show("Curso no eliminado").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }

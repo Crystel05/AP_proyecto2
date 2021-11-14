@@ -91,7 +91,7 @@ public class EnviarNoticia extends VerticalLayout {
             case Septimo:
                 gra = "7";
                 break;
-            case Preparatoria:
+            case Prepa:
                 gra = "prepa";
                 break;
             case Undecimo:

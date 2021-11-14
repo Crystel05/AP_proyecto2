@@ -90,6 +90,7 @@ public class AgregarCurso extends VerticalLayout {
             gradoIdStr.length() > 0 & diaSemanaStr.length() > 0 &
             horaInicioStr.length() > 0 & horaFinStr.length() > 0){
             System.out.println("datos correctos");
+            nombreStr = nombreStr.replace(" ", "_");
             System.out.println( codigoStr + " " + nombreStr + " " +  gradoIdStr + " " +  diaSemanaStr + " " +  horaInicioStr + " " +  horaFinStr);
             if (Controlador.addCurso(codigoStr, nombreStr, gradoIdStr, diaSemanaStr, horaInicioStr, horaFinStr)){
                 Notification.show("Curso agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);

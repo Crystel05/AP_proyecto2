@@ -53,10 +53,20 @@ public class AdminListaDocentes extends VerticalLayout {
         NativeButtonRenderer verCursos = new NativeButtonRenderer<>("ver cursos");
         docentes.addColumn(verCursos);
         verCursos.addItemClickListener(e->{
-            //primero dar dovbel click y luego ver cursos
             cursosD.removeAll();
-            cursosD.add(cargarCursosXProfesor());
-            cursosD.open();
+            //primero dar dovbel click y luego ver cursos
+            Grid<Curso> cursosEsts = new Grid<>(Curso.class, false);
+            cursosEsts.setColumns("ID", "nombre");
+            if (controlador.getDocente() != null) {
+                cursosEsts.setItems(Controlador.CursosXProfesor(controlador.getDocente().getCorreo()));
+                cursosEsts.setWidth("400px");
+                cursosEsts.setHeight("200px");
+                cursosEsts.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+                cursosD.add(cursosEsts);
+                cursosD.open();
+                cursosD.open();
+            }
+
         });
         eliminar_editar.add("¿Desea eliminar o editar el docente?");
         Button eliminar = new Button("ElIMINAR");
@@ -69,6 +79,8 @@ public class AdminListaDocentes extends VerticalLayout {
         eliminar.addClickListener(e->{
             if (Controlador.EliminarDocente(controlador.getDocente().getCedula())){
                 Notification.show("Docente " + controlador.getDocente().getNombre() + " eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                listaDocentes = Controlador.CargarDocentes();
+                docentes.setItems(listaDocentes);
             } else{
                 Notification.show("Docente no eliminado").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
