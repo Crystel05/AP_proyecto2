@@ -2,6 +2,7 @@ package Vista.Admin.GestionEstudiantes;
 
 import Controlador.Controlador;
 import Modelo.Grado;
+import Modelo.SendMail;
 import Vista.Admin.MenuAdmin;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -71,11 +72,8 @@ public class AgregarEstudiante extends VerticalLayout {
             System.out.println("datos correctos");
             if (Controlador.AgregarEstudiante(cedula, nombre, correo, contra, apellido, grado)){
                 Notification.show("Curso agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                try {
-
-                }catch (Exception e){
-
-                }
+                String mensaje = "Su correo es : " + correo + " y su contraseña : " + contra;
+                SendMail.Send(correo, mensaje);
             }
             else{
                 Notification.show("Curso no agregado : error en db").addThemeVariants(NotificationVariant.LUMO_ERROR);

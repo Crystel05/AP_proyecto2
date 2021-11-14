@@ -1,12 +1,19 @@
 package Vista.Estudiante;
 
 import java.util.ArrayList;
+
+import Controlador.ControladorEstudiante;
+import Controlador.DummyMethods;
+import Modelo.Curso;
+import Modelo.Mensaje;
 import com.vaadin.collaborationengine.CollaborationMessageList;
 import com.vaadin.collaborationengine.UserInfo;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -15,7 +22,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Chat estudiante")
+@PageTitle("Chat Estudiante")
 @Route(value = "chatE", layout = MenuEstudiante.class)
 public class ChatEstudiante extends VerticalLayout {
 
@@ -26,6 +33,10 @@ public class ChatEstudiante extends VerticalLayout {
     private TextField mensaje;
     private Button enviar;
     private MessageListItem enviado;
+    private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
+    private ArrayList<Mensaje> mensajesDB = new ArrayList<>();
+    private Curso cursoActual = null;
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public ChatEstudiante() {
         addClassName("chat-view");
@@ -36,13 +47,17 @@ public class ChatEstudiante extends VerticalLayout {
 
         setSpacing(false);
 
-        userInfo = new UserInfo("10", "Prueba"); //cambiar por los usarios de la base de datos
-
-        tabs = new Tabs(new Tab("#Curso mat"));
+        if (estudiante.getEstudianteActual() != null)
+            userInfo = new UserInfo(estudiante.getEstudianteActual().getCedula(), estudiante.getEstudianteActual().getNombre()); //cambiar por los usarios de la base de datos
+        else
+            userInfo = new UserInfo("1", "a");
+        tabs = new Tabs();
+        for (Curso c : estudiante.getCursosActuales()) {
+            tabs.add(new Tab(c.getNombre()));
+        }
         tabs.setWidthFull();
 
         list = new CollaborationMessageList(userInfo, "chat/#Curso mat");
-        listaMensajes(null);
         list.setWidthFull();
 
         list.addClassNames("chat-view-message-list");
@@ -58,8 +73,13 @@ public class ChatEstudiante extends VerticalLayout {
         enviado.setUserName(userInfo.getName());
         enviado.setUserColorIndex(2);
         enviar.addClickListener(e->{
-            enviado.setText(mensaje.getValue());
-            listaMensajes(enviado);
+            if(estudiante.getControlador().enviarMensaje(cursoActual.getID(), dummyMethods.convertirGrado(cursoActual.getGrado()),
+                    estudiante.getEstudianteActual().getCorreo(), mensaje.getValue())){
+                enviado.setText(mensaje.getValue());
+                dummyMethods.listaMensajes(enviado, mensajesDB, list);
+            }else{
+                Notification.show("Error al enviar el mensaje").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
             mensaje.clear();
         });
 
@@ -70,25 +90,15 @@ public class ChatEstudiante extends VerticalLayout {
         tabs.addSelectedChangeListener(event -> {
             String channelName = event.getSelectedTab().getLabel();
             list.setTopic("chat/" + channelName);
+            for (Curso curso : estudiante.getCursosActuales()){
+                if (curso.getNombre().equals(channelName)){
+                    String grado = dummyMethods.convertirGrado(curso.getGrado());
+                    mensajesDB = estudiante.getControlador().listaMensajesCurso(curso.getID(), grado);
+                    dummyMethods.listaMensajes(null, mensajesDB, list);
+                    cursoActual = curso;
+                }
+            }
         });
-    }
-
-    private void listaMensajes(MessageListItem enviado){
-        ArrayList<MessageListItem> mensajes = new ArrayList<>();
-        MessageListItem mensaje1 = new MessageListItem(); // agregar los mensajes de la base de datos
-        mensaje1.setUserName("Pablito");
-        mensaje1.setUserColorIndex(6); //7 es la cantidad máxima
-        mensaje1.setText("Hola");
-        MessageListItem mensaje2 = new MessageListItem();
-        mensaje2.setUserName("Juan");
-        mensaje2.setText("Hola");
-        mensaje2.setUserColorIndex(5);
-        mensajes.add(mensaje1);
-        mensajes.add(mensaje2);
-        if (enviado != null){
-            mensajes.add(enviado);
-        }
-        list.getContent().setItems(mensajes);
     }
 
 }

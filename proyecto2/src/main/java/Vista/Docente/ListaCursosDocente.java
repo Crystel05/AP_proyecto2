@@ -1,7 +1,7 @@
 package Vista.Docente;
 
+import Controlador.ControladorProfesor;
 import Modelo.Curso;
-import Modelo.Grado;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,6 +16,7 @@ import java.util.List;
 public class ListaCursosDocente extends VerticalLayout {
 
     private Grid<Curso> cursos;
+    private ControladorProfesor profesor = ControladorProfesor.getInstance();
     private List<Curso> listaCursos = new ArrayList<>();
 
     public ListaCursosDocente() {
@@ -24,9 +25,9 @@ public class ListaCursosDocente extends VerticalLayout {
     }
 
     private void ventana() {
+        ArrayList<Curso> cursosLista = profesor.listaCursosProfesor();
+        listaCursos.addAll(cursosLista);
         cursos = new Grid<>(Curso.class, false);
-        listaCursos.add(new Curso("mat", "Matemáticas", Grado.Cuarto, "Martes a las 7"));
-        listaCursos.add(new Curso("cien", "Ciencias", Grado.Primero, "Miércoles 8:00am-9:00am"));
         cursos.setItems(listaCursos);
         cursos.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         cursos.setColumns("ID", "nombre", "grado", "horario");

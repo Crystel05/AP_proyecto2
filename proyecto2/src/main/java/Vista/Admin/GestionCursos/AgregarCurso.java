@@ -4,6 +4,7 @@ package Vista.Admin.GestionCursos;
 import Modelo.Dia;
 import Modelo.Grado;
 import Controlador.Controlador;
+import Modelo.SendMail;
 import Vista.Admin.MenuAdmin;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

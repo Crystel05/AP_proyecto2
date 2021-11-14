@@ -1,13 +1,18 @@
 package Vista.Estudiante;
 
-import com.vaadin.flow.component.Text;
+import Controlador.ControladorEstudiante;
+import Controlador.DummyMethods;
+import Modelo.Curso;
+import Modelo.Docente;
+import Modelo.Grado;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,43 +26,72 @@ import com.vaadin.flow.router.Route;
 public class VerProfesor extends VerticalLayout {
 
     private Tabs cursos;
-    private Integer calificacion;
+    private Integer calificacion = 0;
+    private Docente docenteActual;
+    private ControladorEstudiante estudiante = ControladorEstudiante.getInstance();
+    private DummyMethods dummyMethods = new DummyMethods();
 
     public VerProfesor() {
         ventana();
     }
 
     private void ventana() {
-        cursos = new Tabs(new Tab("Curso mat"));
+        cursos = new Tabs();
+        for (Curso c : estudiante.getCursosActuales()) {
+            cursos.add(new Tab(c.getNombre()));
+        }
+        cursos.setWidthFull();
         cursos.setWidthFull();
 
         H4 detalles = new H4("Detalles del docente");
         Button calificarB = new Button("CALIFICAR");
         calificarB.setIcon(VaadinIcon.STAR.create());
         calificarB.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        calificarB.addClickListener(e->{
+           if (calificacion>0 && docenteActual != null){
+               boolean calificado = estudiante.calificarDocente(docenteActual.getCedula(), calificacion);
+               if (calificado){
+                   Notification.show("Docente calificado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+               }else{
+                   Notification.show("Error calificando docente").addThemeVariants(NotificationVariant.LUMO_ERROR);
+               }
+           }
+        });
 
         HorizontalLayout nombreDets = new HorizontalLayout();
         H5 nombreD = new H5("Nombre");
-        H5 nombre = new H5("Luis perez");
+        H5 nombre = new H5();
         nombreDets.add(nombreD, nombre);
 
         HorizontalLayout cedulaDets = new HorizontalLayout();
         H5 cedulaD = new H5("Cédula");
-        H5 cedula = new H5("454546546");
+        H5 cedula = new H5();
         cedulaDets.add(cedulaD, cedula);
 
         HorizontalLayout correoDets = new HorizontalLayout();
         H5 correoD = new H5("Correo electrónico");
-        H5 correo = new H5("correo@correo.com");
+        H5 correo = new H5();
         correoDets.add(correoD, correo);
 
         HorizontalLayout califiacion = new HorizontalLayout();
         H5 calificacionPromedioD = new H5("Calificación promedio");
-        H5 calificacionPromedio = new H5("5");
+        H5 calificacionPromedio = new H5();
         califiacion.add(calificacionPromedioD, calificacionPromedio);
 
         cursos.addSelectedChangeListener(event -> {
             String channelName = event.getSelectedTab().getLabel();
+            for (Curso curso : estudiante.getCursosActuales()){
+                if (curso.getNombre().equals(channelName)){
+                    Docente d = estudiante.detallesProfesor(curso.getID(), dummyMethods.convertirGrado(curso.getGrado()));
+                    docenteActual = d;
+                    if (d != null) {
+                        nombre.setText(d.getNombre());
+                        cedula.setText(d.getCedula());
+                        correo.setText(d.getCorreo());
+                        calificacionPromedio.setText(String.valueOf(((int)d.getCalificacion())));
+                    }
+                }
+            }
         });
 
         H4 calificar = new H4("Calificar profesor");
@@ -190,4 +224,5 @@ public class VerProfesor extends VerticalLayout {
     private void calificar(int cant) {
         calificacion = cant;
     }
+
 }

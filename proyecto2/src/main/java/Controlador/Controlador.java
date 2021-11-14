@@ -22,7 +22,7 @@ public class Controlador {
 
     private static Controlador controlador;
     private static String path = "https://nodejsclusters-57268-0.cloudclusters.net";
-    private Curso curso = new Curso();
+    private Curso curso;
     private Docente docente;
     private Estudiante estudiante;
 

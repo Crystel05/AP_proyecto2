@@ -71,7 +71,7 @@ app.get("/tipoUsuario/:IdUsu", async(req, res)=>{
 //Dar todos los cursos a Admin, ENTRADAS: ninguna SALIDA: todos los cursos
 app.get("/cursos", async(req, res)=>{
     try{
-        const cursos = await pool.query("SELECT curso.codigo, clase, curso.nombre FROM curso INNER JOIN grado ON curso.\"gradoId\" = grado.\"ID\"");
+        const cursos = await pool.query("SELECT curso.codigo, clase, curso.nombre, curso.\"horaInicio\", curso.\"horaFin\", curso.\"diaSemana\" FROM curso INNER JOIN grado ON curso.\"gradoId\" = grado.\"ID\"");
         res.json(cursos.rows)
 
     }catch(err) {
@@ -130,7 +130,7 @@ app.get("/cursos/info/:cod/:clase", async(req, res)=>{
 //Lista de todos los profesores, ENTRADAS: ninguna SALIDA:lista de todos los profesores
 app.get("/profesores", async(req, res)=>{
     try{
-        const usuarios = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.cedula FROM profesor INNER JOIN usuario ON profesor.\"usuarioId\" = usuario.\"ID\"");
+        const usuarios = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.contrasenna, usuario.cedula, usuario.correo, calificacion FROM profesor INNER JOIN usuario ON profesor.\"usuarioId\" = usuario.\"ID\"");
         res.json(usuarios.rows)
 
     }catch(err) {
@@ -186,7 +186,7 @@ app.get("/CedPorCurso/:cod/:grad", async(req, res)=>{
 //Lista de todos los alumnos, ENTRADAS: nada SALIDA: Lista de todos los estudiantes
 app.get("/estudiantes", async(req, res)=>{
     try{
-        const estudiantes = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.nombre, grado.clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\"");
+        const estudiantes = await pool.query("SELECT usuario.nombre, usuario.apellido, usuario.contrasenna, usuario.cedula, usuario.correo, grado.clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\"");
         res.json(estudiantes.rows)
 
     }catch(err) {
@@ -450,7 +450,7 @@ app.get("/asignarAlumno/:nombre/:apellido/:codigo/:grado", async(req, res)=>{
 app.get("/estudiantesCed/:ced", async(req, res)=>{
     const { ced } = req.params
     try{
-        const estudiante = await pool.query("SELECT nombre, cedula, apellido, clase FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\" WHERE cedula = $1", [ced]);
+        const estudiante = await pool.query("SELECT nombre, cedula, apellido, clase, correo FROM estudiante INNER JOIN usuario ON estudiante.\"usuarioId\" = usuario.\"ID\" INNER JOIN grado ON estudiante.\"gradoId\" = grado.\"ID\" WHERE cedula = $1", [ced]);
         res.json(estudiante.rows)
 
     }catch(err) {

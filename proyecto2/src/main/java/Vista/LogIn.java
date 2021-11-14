@@ -72,6 +72,7 @@ public class LogIn extends VerticalLayout {
     }
 
     private void iniciarSesion() {
+
         TipoUsuario tipoUsuario = controlador.iniciarSesion(correo.getValue(), contrasena.getValue());
         if (tipoUsuario!=null) {
             switch (tipoUsuario) {
