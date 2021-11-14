@@ -61,6 +61,7 @@ public class ChatDocentes extends VerticalLayout {
         tabs.setWidthFull();
 
         list = new CollaborationMessageList(userInfo, "chat/#Curso mat");
+        mensajesDB = profesor.getControlador().listaMensajesCurso(profesor.getCursosActuales().get(0).getID(),dummyMethods.convertirGrado(profesor.getCursosActuales().get(0).getGrado()));
         dummyMethods.listaMensajes(null, mensajesDB, list);
         list.setWidthFull();
 

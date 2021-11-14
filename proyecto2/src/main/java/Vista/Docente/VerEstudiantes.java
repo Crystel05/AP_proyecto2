@@ -4,13 +4,9 @@ import Controlador.ControladorProfesor;
 import Controlador.DummyMethods;
 import Modelo.Curso;
 import Modelo.Estudiante;
-import Modelo.Grado;
-import Modelo.Tarea_Noticia;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -46,8 +42,8 @@ public class VerEstudiantes extends VerticalLayout {
         estudiantes = new Grid<>(Estudiante.class, false);
         estudiantes.setColumns("nombre", "cedula", "correo", "grado");
         cursosEst = new Dialog();
-        List<Estudiante> estudianteList = new ArrayList<>();
-
+        Curso curso1 = profesor.getCursosActuales().get(0);
+        List<Estudiante> estudianteList = new ArrayList<>(profesor.estudiantesCurso(curso1.getID(), dummyMethods.convertirGrado(curso1.getGrado())));
         estudiantes.setItems(estudianteList);
         estudiantes.addItemDoubleClickListener(e->{
             cursosEst.removeAll();
@@ -69,6 +65,7 @@ public class VerEstudiantes extends VerticalLayout {
             String channelName = event.getSelectedTab().getLabel();
             for (Curso curso : profesor.getCursosActuales()){
                 if (curso.getNombre().equals(channelName)){
+                    estudianteList.clear();
                     estudiantesCurso = profesor.estudiantesCurso(curso.getID(), dummyMethods.convertirGrado(curso.getGrado()));
                     estudianteList.addAll(estudiantesCurso);
                     estudiantes.setItems(estudianteList);

@@ -125,7 +125,15 @@ public class VerTareas extends VerticalLayout {
             titulos.get(i).setVisible(false);
             descripciones.get(i).setVisible(false);
         }
-
+        Curso curso1 = estudiante.getCursosActuales().get(0);
+        String grado1 = dummyMethods.convertirGrado(curso1.getGrado());
+        ArrayList<Tarea_Noticia> tareasLista1 = estudiante.tareas(curso1.getID(), grado1);
+        for (int i = 0; i < tareasLista1.size(); i++){
+            titulos.get(i).setValue(tareasLista1.get(i).getTitulo());
+            titulos.get(i).setVisible(true);
+            descripciones.get(i).setValue(tareasLista1.get(i).getContenido());
+            descripciones.get(i).setVisible(true);
+        }
         cursos.addSelectedChangeListener(event -> {
             String channelName = event.getSelectedTab().getLabel();
             for (Curso curso : estudiante.getCursosActuales()){
@@ -133,14 +141,17 @@ public class VerTareas extends VerticalLayout {
                     String grado = dummyMethods.convertirGrado(curso.getGrado());
                     ArrayList<Tarea_Noticia> tareasLista = estudiante.tareas(curso.getID(), grado);
                     if (tareasLista != null && tareasLista.size()>0){
-                        for (int i = 0; i < tareasLista.size()-1; i++){
+                        for (int i = 0; i < tareasLista.size(); i++){
                             titulos.get(i).setValue(tareasLista.get(i).getTitulo());
                             titulos.get(i).setVisible(true);
                             descripciones.get(i).setValue(tareasLista.get(i).getContenido());
                             descripciones.get(i).setVisible(true);
+                        }for (int i = tareasLista.size(); i <6; i++){
+                            titulos.get(i).setVisible(false);
+                            descripciones.get(i).setVisible(false);
                         }
                     }else{
-                        for (int i = 0; i < titulos.size()-1; i++){
+                        for (int i = 0; i < titulos.size(); i++){
                             titulos.get(i).setVisible(false);
                             descripciones.get(i).setVisible(false);
                         }

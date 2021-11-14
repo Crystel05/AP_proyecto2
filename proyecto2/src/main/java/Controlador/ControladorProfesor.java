@@ -103,15 +103,11 @@ public class ControladorProfesor {
                 }
 
                 scanner.close();
-
+                System.out.println(get);
                 JSONParser parser = new JSONParser();
                 JSONArray array = (JSONArray) parser.parse(String.valueOf(info));
                 JSONObject data = (JSONObject) array.get(0);
-                if (data.get("insertarnoticia").toString().equals("0")){
-                    return true;
-                }else {
-                    return false;
-                }
+                return data.get("insertarnoticia").toString().equals("0");
             }else {
                 return false;
             }
@@ -276,7 +272,8 @@ public class ControladorProfesor {
 
     public static void main(String[] args){
         ControladorProfesor controladorProfesor = ControladorProfesor.getInstance();
-        System.out.println(controladorProfesor.estudiantesCurso("soc", "3"));
+        //System.out.println(controladorProfesor.estudiantesCurso("soc", "3"));
 //        System.out.println(controladorProfesor.detalles("4684184318"));
+        controladorProfesor.enviarNoticia("soc", "3", "Semana civica", "Recuerden participar de las actividades de semana civica");
     }
 }
