@@ -57,6 +57,10 @@ public class LogIn extends VerticalLayout {
         contrasena.setPrefixComponent(contra);
         contrasena.setWidth("400px");
 
+        //borrar luego
+        correo.setValue("titovare@gmail.com");
+        contrasena.setValue("pelea");
+
         iniciar = new Button("INICIAR SESIÓN", VaadinIcon.UNLOCK.create());
         iniciar.setIconAfterText(true);
         iniciar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

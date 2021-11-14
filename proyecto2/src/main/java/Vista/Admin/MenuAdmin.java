@@ -112,7 +112,7 @@ public class MenuAdmin extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Gesttión de cursos", "la la-book", AdminListaCursos.class), //cambiar las clases
+                new MenuItemInfo("Gestión de cursos", "la la-book", AdminListaCursos.class), //cambiar las clases
                 new MenuItemInfo("Gestión de docentes", "la la-user", AdminListaDocentes.class),
                 new MenuItemInfo("Gestion de estudiantes", "la la-users", AdminListaEstudiantes.class),
                 new MenuItemInfo("Asignación de cursos", "la la-edit", ListaCursosAsignar.class)

@@ -41,6 +41,62 @@ public class Curso {
         this.grado = grado;
     }
 
+    public void setGrado(String num) {
+        if (Grado.Prepa.getClase().equals(num)){
+            this.grado = Grado.Prepa;
+        } else if (Grado.Primero.getClase().equals(num)){
+            this.grado = Grado.Primero;
+        } else if (Grado.Segundo.getClase().equals(num)){
+            this.grado = Grado.Segundo;
+        } else if (Grado.Tercero.getClase().equals(num)){
+            this.grado = Grado.Tercero;
+        } else if (Grado.Cuarto.getClase().equals(num)){
+            this.grado = Grado.Cuarto;
+        } else if (Grado.Sexto.getClase().equals(num)){
+            this.grado = Grado.Sexto;
+        } else if (Grado.Septimo.getClase().equals(num)){
+            this.grado = Grado.Septimo;
+        } else if (Grado.Undecimo.getClase().equals(num)){
+            this.grado = Grado.Undecimo;
+        }
+    }
+
+    public static  Grado getGradoEnum(String num) {
+        if (Grado.Prepa.getClase().equals(num)){
+            return Grado.Prepa;
+        } else if (Grado.Primero.getClase().equals(num)){
+            return Grado.Primero;
+        } else if (Grado.Segundo.getClase().equals(num)){
+            return Grado.Segundo;
+        } else if (Grado.Tercero.getClase().equals(num)){
+            return Grado.Tercero;
+        } else if (Grado.Cuarto.getClase().equals(num)){
+            return Grado.Cuarto;
+        } else if (Grado.Sexto.getClase().equals(num)){
+            return Grado.Sexto;
+        } else if (Grado.Septimo.getClase().equals(num)){
+            return Grado.Septimo;
+        } else if (Grado.Undecimo.getClase().equals(num)){
+            return Grado.Undecimo;
+        }
+        return null;
+    }
+    public static Dia getDiaEnum(String dia) {
+        if (Dia.Lunes.getDia().equals(dia)){
+            return Dia.Lunes;
+        } else if (Dia.Martes.getDia().equals(dia)){
+            return Dia.Martes;
+        } else if (Dia.Miércoles.getDia().equals(dia)){
+            return Dia.Miércoles;
+        } else if (Dia.Jueves.getDia().equals(dia)){
+            return Dia.Jueves;
+        } else if (Dia.Viernes.getDia().equals(dia)){
+            return Dia.Viernes;
+        } else {
+            return Dia.Sábado;
+        }
+    }
+
     public String getHorario() {
         return horario;
     }

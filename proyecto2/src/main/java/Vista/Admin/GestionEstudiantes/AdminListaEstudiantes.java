@@ -1,12 +1,15 @@
 package Vista.Admin.GestionEstudiantes;
 
 
+import Controlador.Controlador;
+import Modelo.Curso;
 import Modelo.Docente;
 import Modelo.Estudiante;
 import Modelo.Grado;
 import Vista.Admin.GestionDocentes.AgregarDocente;
 import Vista.Admin.GestionDocentes.ModificarDocente;
 import Vista.Admin.MenuAdmin;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -33,6 +36,7 @@ public class AdminListaEstudiantes extends VerticalLayout {
     private Grid<Estudiante> estudiantes;
     private Button agregarNuevo;
     private List<Estudiante> listaEstudiantes = new ArrayList<>();
+    Controlador controlador = Controlador.getInstance();
 
     public AdminListaEstudiantes() {
         ventana();
@@ -42,16 +46,20 @@ public class AdminListaEstudiantes extends VerticalLayout {
         Dialog cursosD = new Dialog();
         //poner los de verdad
         String mensaje = new String("mat\t\tMamaticas\ncien\t\tCiencias"); //ver como hacer para que haga saltos de línea
-        cursosD.add(mensaje);
+
         Dialog eliminar_editar = new Dialog();
         estudiantes = new Grid<>(Estudiante.class, false);
-        listaEstudiantes.add(new Estudiante("Crystel Montero", "305290866", "crysvane05@gmail.com", Grado.Primero));
-        listaEstudiantes.add(new Estudiante("Juan Perez", "554564546", "crysvane05@gmail.com", Grado.Segundo));
+        listaEstudiantes = Controlador.CargarEstudiantes();
         estudiantes.setItems(listaEstudiantes);
         estudiantes.setColumns("nombre", "cedula", "correo", "grado");
-        estudiantes.addColumn(new NativeButtonRenderer<>("ver cursos", e->{
+        NativeButtonRenderer verCursos = new NativeButtonRenderer<>("ver cursos");
+        estudiantes.addColumn(verCursos);
+        verCursos.addItemClickListener(e->{
+            //primero dar dovbel click y luego ver cursos
+            cursosD.removeAll();
+            cursosD.add(cargarCursosXEstudiante());
             cursosD.open();
-        }));
+        });
         eliminar_editar.add("¿Desea eliminar o editar el estudiante?");
         Button eliminar = new Button("ElIMINAR");
         eliminar.setIcon(VaadinIcon.CLOSE_SMALL.create());
@@ -61,7 +69,11 @@ public class AdminListaEstudiantes extends VerticalLayout {
         modificar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         eliminar_editar.add(new Div( modificar, eliminar));
         eliminar.addClickListener(e->{
-            //Hacer cosas
+            if (Controlador.EliminarEstudiante(controlador.getEstudiante().getCedula())){
+                Notification.show("Docente " + controlador.getEstudiante().getNombre() + " eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } else{
+                Notification.show("Docente no eliminado").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
             Notification.show("Estudiante eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             eliminar_editar.close();
         });
@@ -71,7 +83,7 @@ public class AdminListaEstudiantes extends VerticalLayout {
             eliminar_editar.close();
         });
         estudiantes.addItemDoubleClickListener(e->{
-            Estudiante estudiante = e.getItem();
+            controlador.setEstudiante(e.getItem());
             eliminar_editar.open();
         });
         estudiantes.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
@@ -86,6 +98,21 @@ public class AdminListaEstudiantes extends VerticalLayout {
         setSizeFull();
         setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+    }
+
+    private String cargarCursosXEstudiante(){
+        String cursosStr = "";
+        System.out.println("tomar cursos");
+        if (controlador.getEstudiante() != null){
+            List<Curso> cursos = Controlador.CursosXEstudiante(controlador.getEstudiante().getCedula());
+            for (Curso curso: cursos) {
+                cursosStr += curso.getNombre() + "\t" + curso.getGrado().getClase() + "\n";
+            }
+        }
+        else{
+            System.out.println("no entra");
+        }
+        return cursosStr;
     }
 
 }

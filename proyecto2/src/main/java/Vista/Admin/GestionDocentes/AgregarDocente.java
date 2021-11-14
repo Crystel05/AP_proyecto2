@@ -1,5 +1,6 @@
 package Vista.Admin.GestionDocentes;
 
+import Controlador.Controlador;
 import Modelo.Dia;
 import Modelo.Grado;
 import Vista.Admin.MenuAdmin;
@@ -35,7 +36,7 @@ public class AgregarDocente extends VerticalLayout {
 
     private void ventana() {
         titulo = new H2("Agregar docente nuevo");
-        nombre = new TextField("Nombre");
+        nombre = new TextField("Nombre y apellido");
         nombre.setWidth("300px");
         cedula = new TextField("Cédula");
         cedula.setWidth("300px");
@@ -45,7 +46,7 @@ public class AgregarDocente extends VerticalLayout {
         agregar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         agregar.setIcon(VaadinIcon.EXTERNAL_BROWSER.create());
         agregar.addClickListener(e->{
-            //if de cosas bien
+            agregarDocente();
             Notification.show("Docente agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         });
         add(titulo, nombre, cedula, correo, agregar);
@@ -54,4 +55,27 @@ public class AgregarDocente extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
     }
 
+    public void agregarDocente(){
+        String cedula = this.cedula.getValue();
+        String correo = this.correo.getValue();
+        String contra = Controlador.createPassword();
+        String string = this.nombre.getValue();
+        String[] parts = string.split(" ");
+        String nombre = parts[0];
+        String apellido = parts[1];
+        if(cedula.length() > 0 & nombre.length() > 0 &
+                correo.length() > 0 & contra.length() > 0 &
+                apellido.length() > 0 ){
+            System.out.println("datos correctos");
+            if (Controlador.AgregarDocente(cedula, nombre, correo, contra, apellido)){
+                Notification.show("Curso agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            }
+            else{
+                Notification.show("Curso no agregado : error en db").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        }
+        else{
+            Notification.show("Curso no agregado : Datos incorrectos").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
 }

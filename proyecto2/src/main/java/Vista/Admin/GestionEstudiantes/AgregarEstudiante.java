@@ -1,5 +1,6 @@
 package Vista.Admin.GestionEstudiantes;
 
+import Controlador.Controlador;
 import Modelo.Grado;
 import Vista.Admin.MenuAdmin;
 import com.vaadin.flow.component.button.Button;
@@ -33,7 +34,7 @@ public class AgregarEstudiante extends VerticalLayout {
 
     private void ventana() {
         titulo = new H2("Agregar estudiante nuevo");
-        nombre = new TextField("Nombre");
+        nombre = new TextField("Nombre y apellido");
         nombre.setWidth("300px");
         cedula = new TextField("Cédula");
         cedula.setWidth("300px");
@@ -46,12 +47,42 @@ public class AgregarEstudiante extends VerticalLayout {
         agregar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         agregar.setIcon(VaadinIcon.EXTERNAL_BROWSER.create());
         agregar.addClickListener(e->{
-            //if de cosas bien
+            agregarEstudiante();
             Notification.show("Estudiante agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         });
         add(titulo, nombre, cedula, correo, grado, agregar);
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+    }
+
+    public void agregarEstudiante(){
+        String cedula = this.cedula.getValue();
+        String correo = this.correo.getValue();
+        String contra = Controlador.createPassword();
+        String grado = this.grado.getValue().getClase();//este no estoy seguro
+        String string = this.nombre.getValue();
+        String[] parts = string.split(" ");
+        String nombre = parts[0];
+        String apellido = parts[1];
+        if(cedula.length() > 0 & nombre.length() > 0 &
+                correo.length() > 0 & contra.length() > 0 &
+                apellido.length() > 0 & grado.length() > 0 ){
+            System.out.println("datos correctos");
+            if (Controlador.AgregarEstudiante(cedula, nombre, correo, contra, apellido, grado)){
+                Notification.show("Curso agregado exitosamente!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                try {
+
+                }catch (Exception e){
+
+                }
+            }
+            else{
+                Notification.show("Curso no agregado : error en db").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        }
+        else{
+            Notification.show("Curso no agregado : Datos incorrectos").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
     }
 }

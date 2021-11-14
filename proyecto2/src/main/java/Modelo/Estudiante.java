@@ -77,4 +77,24 @@ public class Estudiante {
     public void setGrado(Grado grado) {
         this.grado = grado;
     }
+
+    public void setGrado(String num) {
+        if (Grado.Prepa.getClase().equals(num)){
+            this.grado = Grado.Prepa;
+        } else if (Grado.Primero.getClase().equals(num)){
+            this.grado = Grado.Primero;
+        } else if (Grado.Segundo.getClase().equals(num)){
+            this.grado = Grado.Segundo;
+        } else if (Grado.Tercero.getClase().equals(num)){
+            this.grado = Grado.Tercero;
+        } else if (Grado.Cuarto.getClase().equals(num)){
+            this.grado = Grado.Cuarto;
+        } else if (Grado.Sexto.getClase().equals(num)){
+            this.grado = Grado.Sexto;
+        } else if (Grado.Septimo.getClase().equals(num)){
+            this.grado = Grado.Septimo;
+        } else if (Grado.Undecimo.getClase().equals(num)){
+            this.grado = Grado.Undecimo;
+        }
+    }
 }

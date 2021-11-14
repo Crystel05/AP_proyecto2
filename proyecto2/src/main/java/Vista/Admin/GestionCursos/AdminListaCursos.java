@@ -1,5 +1,6 @@
 package Vista.Admin.GestionCursos;
 
+import Controlador.Controlador;
 import Modelo.Curso;
 import Modelo.Grado;
 import Vista.Admin.MenuAdmin;
@@ -28,6 +29,7 @@ public class AdminListaCursos extends VerticalLayout {
     private Grid<Curso> cursos;
     private Button agregarNuevo;
     private List<Curso> listaCursos = new ArrayList<>();
+    Controlador controlador = Controlador.getInstance();
 
     public AdminListaCursos() {
         ventana();
@@ -37,8 +39,10 @@ public class AdminListaCursos extends VerticalLayout {
         Dialog eliminar_editar = new Dialog();
         addClassName("lista-cursos-view");
         cursos = new Grid<>(Curso.class, false);
-        listaCursos.add(new Curso("mat", "Matemáticas", Grado.Cuarto, "Martes a las 7"));
-        listaCursos.add(new Curso("cien", "Ciencias", Grado.Primero, "Miércoles 8:00am-9:00am"));
+        //listaCursos.add(new Curso("mat", "Matemáticas", Grado.Cuarto, "Martes a las 7"));
+        //listaCursos.add(new Curso("cien", "Ciencias", Grado.Primero, "Miércoles 8:00am-9:00am"));
+
+        listaCursos = loadCursos();
         cursos.setItems(listaCursos);
         cursos.setColumns("ID", "nombre", "grado", "horario");
         eliminar_editar.add("¿Desea eliminar o editar el curso?");
@@ -50,17 +54,20 @@ public class AdminListaCursos extends VerticalLayout {
         modificar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         eliminar_editar.add(new Div( modificar, eliminar));
         eliminar.addClickListener(e->{
-            //Hacer cosas
-            Notification.show("Curso eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            if (Controlador.DeleteCurso(controlador.getCurso().getID(), controlador.getCurso().getGrado().getClase())){
+                Notification.show("Curso eliminado con éxito").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } else{
+                Notification.show("Curso no eliminado").addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
             eliminar_editar.close();
         });
         modificar.addClickListener(e->{
-            //enviar datos
             UI.getCurrent().navigate(ModificarCurso.class);
             eliminar_editar.close();
         });
         cursos.addItemDoubleClickListener(e->{
-            Curso curso = e.getItem();
+            controlador.getCurso().setGrado(e.getItem().getGrado());
+            controlador.getCurso().setID(e.getItem().getID());
             eliminar_editar.open();
         });
         cursos.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
@@ -77,5 +84,9 @@ public class AdminListaCursos extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
     }
 
+    private List<Curso> loadCursos(){
+
+        return Controlador.loadCursos();
+    }
 
 }

@@ -1,6 +1,9 @@
 package Vista.Admin.AsignarCursos;
 
 import Modelo.Curso;
+import Controlador.Controlador;
+import Modelo.Docente;
+import Modelo.Estudiante;
 import Modelo.Grado;
 import Vista.Admin.GestionCursos.AgregarCurso;
 import Vista.Admin.MenuAdmin;
@@ -35,9 +38,14 @@ public class ListaCursosAsignar extends VerticalLayout {
     private Button asignarProf;
     private Button asignarEsts;
     private ComboBox<String> docentes;
-    private List<String> docents;
+    private List<String> docents = new ArrayList<>();
+    private List<String> students = new ArrayList<>();
+    private List<Docente> profesores;
+    private List<Estudiante> estudiantesInstances;
     private Button confirmar;
-    private MultiSelectListBox<String> estudiantes;
+    private ComboBox<String> estudiantes;
+    Controlador controlador = Controlador.getInstance();
+
 
     public ListaCursosAsignar() {
         addClassName("lista-cursos-asignar-view");
@@ -57,12 +65,11 @@ public class ListaCursosAsignar extends VerticalLayout {
         asignarP.add("Asignar profesor o estudiantes al curso");
         asignarP.add(new Div(asignarProf, asignarEsts));
         cursos = new Grid<>(Curso.class, false);
-        listaCursos.add(new Curso("mat", "Matemáticas", Grado.Cuarto, "Martes a las 7"));
-        listaCursos.add(new Curso("cien", "Ciencias", Grado.Primero, "Miércoles 8:00am-9:00am"));
+        listaCursos = Controlador.loadCursos();
         cursos.setItems(listaCursos);
         cursos.setColumns("ID", "nombre", "grado", "horario");
         cursos.addItemDoubleClickListener(e->{
-            Curso curso = e.getItem();
+            controlador.setCurso(e.getItem());
             asignarP.open();
         });
 
@@ -77,9 +84,11 @@ public class ListaCursosAsignar extends VerticalLayout {
         asignarDocente = new Dialog();
         asignarDocente.add("Asignar profesor al curso");
         docentes = new ComboBox<>("Docentes");
-        docents = new ArrayList<>();
-        docents.add("Luis");
-        docents.add("Mario");
+        profesores = Controlador.CargarDocentes();
+        for (Docente docente: profesores) {
+            String str = docente.getNombre() +"/"+ docente.getCedula();
+            docents.add(str);
+        }
         docentes.setItems(docents);
         confirmar = new Button("ASIGNAR");
         confirmar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -89,6 +98,9 @@ public class ListaCursosAsignar extends VerticalLayout {
         docentes.addValueChangeListener(event->{
             if(!event.getValue().isEmpty()){
                 confirmar.addClickListener(ev->{
+                    String[] parts = docentes.getValue().split("/");
+                    String cedula = parts[1];
+                    Controlador.AsignarDocentes(cedula, controlador.getCurso().getID(), controlador.getCurso().getGrado().getClase());
                     Notification.show("Docente asignado con éxito!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     asignarDocente.close();
                     asignarP.open();
@@ -97,15 +109,17 @@ public class ListaCursosAsignar extends VerticalLayout {
         });
     }
 
+
     private void asignarEstudiantes(){
         asignarEstudiantes = new Dialog();
         asignarEstudiantes.add("Asignar estudiantes al curso");
-        estudiantes = new MultiSelectListBox<>();
-        docents = new ArrayList<>();
-        docents.add("Crystel");
-        docents.add("Juan");
-        docents.add("Manchas");
-        estudiantes.setItems(docents);
+        estudiantes = new ComboBox<>("Estudiantes");
+        students = new ArrayList<>();
+        estudiantesInstances = Controlador.CargarEstudiantes();
+        for (Estudiante estudiante: estudiantesInstances) {
+            students.add(estudiante.getNombre());
+        }
+        estudiantes.setItems(students);
         confirmar = new Button("ASIGNAR");
         confirmar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         asignarEstudiantes.add(new Div(estudiantes, confirmar));
@@ -114,6 +128,11 @@ public class ListaCursosAsignar extends VerticalLayout {
         estudiantes.addValueChangeListener(event->{
             if(!event.getValue().isEmpty()){
                 confirmar.addClickListener(ev->{
+                    String[] parts = estudiantes.getValue().split(" ");
+                    String nombre = parts[0];
+                    String apellido = parts[1];
+
+                    Controlador.AsignarEstudiantes(nombre, apellido, controlador.getCurso().getID(), controlador.getCurso().getGrado().getClase());
                     Notification.show("Estudiantes asignados con éxito!").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     asignarEstudiantes.close();
                     asignarP.open();
